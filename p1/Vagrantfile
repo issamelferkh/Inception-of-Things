@@ -1,0 +1,67 @@
+
+
+
+
+# VM User - 'vagrant' by default
+VM_USER = 'vagrant'
+
+Vagrant.configure(2) do |config|
+  # Vagrant box from Hashicorp
+  config.vm.box = VAGRANT_BOX
+  
+  # Actual machine name
+  config.vm.hostname = VM_NAME
+
+  # Set VM name in Virtualbox
+  config.vm.provider "virtualbox" do |v|
+    v.name = VM_NAME
+    v.memory = 2048
+  end
+end
+
+
+
+
+# Box / OS
+VAGRANT_BOX = "centos/7"
+
+# Server hostname
+S_NAME = 'my-vm'
+
+# ServerWorker hostname
+SW_NAME = 'my-vm'
+
+Vagrant.configure(2) do |config|
+  config.vm.box = VAGRANT_BOX
+
+  config.vm.define S_NAME do |control|
+    control.vm.hostname = S_NAME
+    control.vm.network :private_network, ip: "192.168.42.110"
+    control.vm.provider "virtualbox" do |v|
+      v.name = VM_NAME
+      v.memory = 2048
+    end
+
+    # config.vm.provision :shell, :inline => SHELL
+    # [...]
+    # SHELL
+    #   control.vm.provision "shell", path: REDACTED
+  end
+
+  config.vm.define "iel-ferkSW" do |control|
+    control.vm.hostname = "wilSW"
+    control.vm.network REDACTED, ip: "192.168.42.111"
+    control.vm.provider REDACTED do |v|
+      v.customize ["modifyvm", :id, "--name", "wilSW"]
+      [...]
+    end
+    config.vm.provision "shell", inline: <<-SHELL
+      [..]
+    SHELL
+    control.vm.provision "shell", path: REDACTED
+  end
+end
+
+
+
+
