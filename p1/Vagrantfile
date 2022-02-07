@@ -1,64 +1,52 @@
-
-
-
-
-# VM User - 'vagrant' by default
-VM_USER = 'vagrant'
-
-Vagrant.configure(2) do |config|
-  # Vagrant box from Hashicorp
-  config.vm.box = VAGRANT_BOX
-  
-  # Actual machine name
-  config.vm.hostname = VM_NAME
-
-  # Set VM name in Virtualbox
-  config.vm.provider "virtualbox" do |v|
-    v.name = VM_NAME
-    v.memory = 2048
-  end
-end
-
-
-
-
-# Box / OS
+# Common Config
 VAGRANT_BOX = "centos/7"
+RAM = 1024
+CPU = 1
 
-# Server hostname
-S_NAME = 'my-vm'
+# Server
+S_NAME = "iel-ferkS"
+S_IP = "192.168.42.110"
 
-# ServerWorker hostname
-SW_NAME = 'my-vm'
+#Server Worker
+SW_NAME = "iel-ferkSW"
+SW_IP = "192.168.42.111"
+
 
 Vagrant.configure(2) do |config|
   config.vm.box = VAGRANT_BOX
 
+	# config.vbguest.installer_options = { allow_kernel_upgrade: true }
+
+	# if Vagrant.has_plugin?("vagrant-vbguest")
+	#   config.vbguest.auto_update = false
+	# end
+  # => Issue: his is usually because the filesystem "vboxsf" is not available.
+
+  
+  # Server
   config.vm.define S_NAME do |control|
     control.vm.hostname = S_NAME
-    control.vm.network :private_network, ip: "192.168.42.110"
+    control.vm.network :private_network, ip: S_IP
     control.vm.provider "virtualbox" do |v|
-      v.name = VM_NAME
-      v.memory = 2048
+      v.name = S_NAME
+      v.memory = RAM
+      v.cpus = CPU
     end
-
-    # config.vm.provision :shell, :inline => SHELL
-    # [...]
-    # SHELL
-    #   control.vm.provision "shell", path: REDACTED
+    control.vm.synced_folder ".","/vagrant", type: "virtualbox"
+		control.vm.provision "shell", privileged: true, path: "scripts/server.sh", args: [S_IP]
   end
 
-  config.vm.define "iel-ferkSW" do |control|
-    control.vm.hostname = "wilSW"
-    control.vm.network REDACTED, ip: "192.168.42.111"
-    control.vm.provider REDACTED do |v|
-      v.customize ["modifyvm", :id, "--name", "wilSW"]
-      [...]
+  # Server Worker
+  config.vm.define SW_NAME do |control|
+    control.vm.hostname = SW_NAME
+    control.vm.network :private_network, ip: SW_IP
+    control.vm.provider "virtualbox" do |v|
+      v.name = SW_NAME
+      v.memory = RAM
+      v.cpus = CPU
     end
-    config.vm.provision "shell", inline: <<-SHELL
-      [..]
-    SHELL
-    control.vm.provision "shell", path: REDACTED
+    control.vm.synced_folder ".","/vagrant", type: "virtualbox"
+		control.vm.provision "shell", privileged: true, path: "scripts/worker.sh", args: [SW_IP]
   end
 end
 
