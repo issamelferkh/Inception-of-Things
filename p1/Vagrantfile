@@ -1,8 +1,3 @@
-# Common Config
-VAGRANT_BOX = "centos/7"
-RAM = 1024
-CPU = 1
-
 # Server
 S_NAME = "iel-ferkS"
 S_IP = "192.168.42.110"
@@ -11,42 +6,45 @@ S_IP = "192.168.42.110"
 SW_NAME = "iel-ferkSW"
 SW_IP = "192.168.42.111"
 
+# Common Config
+VAGRANT_BOX = "centos/7"
+RAM = 1024
+CPU = 1
+
 
 Vagrant.configure(2) do |config|
   config.vm.box = VAGRANT_BOX
+  config.vbguest.installer_options = { allow_kernel_upgrade: true }
 
-	# config.vbguest.installer_options = { allow_kernel_upgrade: true }
-
+  # => Issue: his is usually because the filesystem "vboxsf" is not available.
 	# if Vagrant.has_plugin?("vagrant-vbguest")
 	#   config.vbguest.auto_update = false
 	# end
-  # => Issue: his is usually because the filesystem "vboxsf" is not available.
 
-  
   # Server
   config.vm.define S_NAME do |control|
     control.vm.hostname = S_NAME
     control.vm.network :private_network, ip: S_IP
+    control.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+		control.vm.provision "shell", privileged: true, path: "scripts/server.sh", args: [S_IP]
     control.vm.provider "virtualbox" do |v|
       v.name = S_NAME
       v.memory = RAM
       v.cpus = CPU
     end
-    control.vm.synced_folder ".","/vagrant", type: "virtualbox"
-		control.vm.provision "shell", privileged: true, path: "scripts/server.sh", args: [S_IP]
   end
 
   # Server Worker
   config.vm.define SW_NAME do |control|
     control.vm.hostname = SW_NAME
     control.vm.network :private_network, ip: SW_IP
+		control.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+		control.vm.provision "shell", privileged: true, path: "scripts/worker.sh", args: [SW_IP]
     control.vm.provider "virtualbox" do |v|
       v.name = SW_NAME
       v.memory = RAM
       v.cpus = CPU
     end
-    control.vm.synced_folder ".","/vagrant", type: "virtualbox"
-		control.vm.provision "shell", privileged: true, path: "scripts/worker.sh", args: [SW_IP]
   end
 end
 

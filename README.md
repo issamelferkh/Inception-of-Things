@@ -10,6 +10,16 @@ This project aims to introduce you to kubernetes from a developer perspective. Y
 
 
 ## Part 1 
+- Resources
+  - https://tferdinand.net/creer-un-cluster-kubernetes-local-avec-vagrant/
+  - https://www.vagrantup.com/docs/synced-folders/virtualbox
+  - https://rancher.com/docs/k3s/latest/en/installation/install-options/
+  - https://www.rancher.co.jp/docs/k3s/latest/en/installation/
+  - https://www.vagrantup.com/docs/triggers
+
+
+
+
 ### Setup 2 node cluster on k3s
 #### Install k3s
 - `curl -sfL https://get.k3s.io | sh -`
@@ -42,3 +52,5 @@ curl -sfL https://get.k3s.io | K3S_URL=https://<server>:6443 K3S_TOKEN=<token> s
 
 sudo cat /var/lib/rancher/k3s/server/node-token
 K101f721423e4ecb1226987ea9c06756e52b035ccb2d36e67f6c20fa86bd2f72645::server:0bc1f40a4709423047a081a9601db1f5
+
+

@@ -1,35 +1,16 @@
-# #!/bin/bash
-
-echo "Upgrade OS"
-# sudo yum upgrade -y
-
-echo "Update OS"
-# sudo yum update -y
+# # #!/bin/bash
 
 echo "Install net-tools (ifconfig cmd)"
 sudo yum install net-tools -y
 
-
 echo "Install KS3 on controller mode"
-curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
+### https://tferdinand.net/creer-un-cluster-kubernetes-local-avec-vagrant/
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode=644 --bind-address=192.168.42.110 --node-ip=192.168.42.110 --tls-san $(hostname) --advertise-address=192.168.42.110" sh -
 
-echo "Copy controler node-token to home"
-sudo cp /var/lib/rancher/k3s/server/node-token ~/.
-
-echo "Change node-token access permissions"
-sudo chmod ~/node-token
-
-echo "Expose TOKEN_FILE env var to share node-token with SW"
-export TOKEN_FILE="~/node-token"
+echo "Copy controler node-token to /vagrant/scripts/node-token"
+sudo cp /var/lib/rancher/k3s/server/node-token /vagrant/scripts/
 
 echo "Add k alias for all users"
 ### https://askubuntu.com/questions/610052/how-can-i-preset-aliases-for-all-users
 echo "alias k='kubectl'" >> /etc/profile.d/00-aliases.sh
-
-echo "[machine : $(hostname)] has been setup succefully!"
-
-
-
-
-
 
