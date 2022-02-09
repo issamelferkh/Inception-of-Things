@@ -1,0 +1,60 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: app3-app
+  labels:
+    app: app3-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app3-app
+  template:
+    metadata:
+      labels:
+        app: app3-app
+    spec:
+      containers:
+      - name: app3-app
+        image: nginx:1.14.2
+        # image: paulbouwer/hello-kubernetes:1.10
+        # args:
+        # - "-text=App 1"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: app3-html
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: app3-service
+spec:
+  selector:
+    app: app3-app
+  ports:
+  - port: 80
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: app3-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app3-service
+            port:
+              number: 80
+

@@ -22,3 +22,19 @@
 - worker issue
 - copy node-token issue
 - env var issue
+
+
+## Part 2
+- [x] need one VM with Centos and k3s server mode
+
+- You will set up 3 web apps that will run in your K3s instance.
+- [x] be able to access them depending on the HOST used when making a request to IP 192.168.42.110.
+- [x] The name of this machine will be your login followed by S (e.g., wilS if your login is wil).
+
+- When a client inputs the ip 192.168.42.110 with the HOST app1.com, the server must display the app1.
+- When the HOST app2.com is used, the server must display the app2.
+- Otherwise, the app3 will be selected by default.
+
+- As you can see, application number 2 has 3 replicas. Adapt your configuration to create the replicas.
+
+curl -H "HOST:app1.com" 192.168.42.110

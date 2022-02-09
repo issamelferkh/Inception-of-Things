@@ -1,4 +1,4 @@
-# #!/bin/bash
+#!/bin/bash
 
 echo "Install net-tools (ifconfig cmd)"
 sudo yum install net-tools -y
