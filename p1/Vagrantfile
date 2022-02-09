@@ -1,67 +1,37 @@
+BOX_IMAGE = "centos/7"
+ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
 
-
-
-
-# VM User - 'vagrant' by default
-VM_USER = 'vagrant'
-
-Vagrant.configure(2) do |config|
-  # Vagrant box from Hashicorp
-  config.vm.box = VAGRANT_BOX
-  
-  # Actual machine name
-  config.vm.hostname = VM_NAME
-
-  # Set VM name in Virtualbox
-  config.vm.provider "virtualbox" do |v|
-    v.name = VM_NAME
-    v.memory = 2048
-  end
-end
-
-
-
-
-# Box / OS
-VAGRANT_BOX = "centos/7"
-
-# Server hostname
-S_NAME = 'my-vm'
-
-# ServerWorker hostname
-SW_NAME = 'my-vm'
-
-Vagrant.configure(2) do |config|
-  config.vm.box = VAGRANT_BOX
-
-  config.vm.define S_NAME do |control|
-    control.vm.hostname = S_NAME
-    control.vm.network :private_network, ip: "192.168.42.110"
+Vagrant.configure("2") do |config|
+  config.vm.box = BOX_IMAGE
+  config.vbguest.auto_update = false
+  config.vm.synced_folder ".", "/vagrant"
+  config.vm.provision 'shell', inline: 'mkdir -p /root/.ssh'
+  config.vm.provision 'shell', inline: "echo #{ssh_pub_key} >> /root/.ssh/authorized_keys"
+  config.vm.provision 'shell', inline: "echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys", privileged: false
+  config.vm.define "abelomarS" do |control|
+    control.vm.hostname = "abelomarS"
+    control.vm.network "private_network", ip: "192.168.42.110"
+    control.vm.provision :shell, privileged: true, path: "./scripts/server.sh"
     control.vm.provider "virtualbox" do |v|
-      v.name = VM_NAME
-      v.memory = 2048
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      v.cpus = 1
+      v.memory = 1024
     end
-
-    # config.vm.provision :shell, :inline => SHELL
-    # [...]
-    # SHELL
-    #   control.vm.provision "shell", path: REDACTED
+    control.trigger.after :up do |trigger|
+      trigger.run = {inline: "vagrant scp abelomarS:/home/token ./scripts/"}
+    end
   end
-
-  config.vm.define "iel-ferkSW" do |control|
-    control.vm.hostname = "wilSW"
-    control.vm.network REDACTED, ip: "192.168.42.111"
-    control.vm.provider REDACTED do |v|
-      v.customize ["modifyvm", :id, "--name", "wilSW"]
-      [...]
+  config.vm.define "abelomarSW" do |control|
+    control.vm.hostname = "abelomarSW"
+    control.vm.network "private_network", ip: "192.168.42.111"
+    control.vm.provision :shell, path: "./scripts/worker.sh"
+    control.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      v.cpus = 1
+      v.memory = 1024
     end
-    config.vm.provision "shell", inline: <<-SHELL
-      [..]
-    SHELL
-    control.vm.provision "shell", path: REDACTED
   end
 end
-
-
-
 
