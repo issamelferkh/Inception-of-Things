@@ -59,8 +59,7 @@ metadata:
     kubernetes.io/ingress.class: "traefik"
 spec:
   rules:
-  - host: app3.com
-    http:
+  - http:
       paths:
       - path: /
         pathType: Prefix
