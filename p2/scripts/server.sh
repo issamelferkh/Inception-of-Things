@@ -1,5 +1,4 @@
 #!/bin/bash
-
 echo "Install net-tools (ifconfig cmd)"
 sudo yum install net-tools -y
 
@@ -11,34 +10,17 @@ echo "Add k alias for all users"
 ### https://askubuntu.com/questions/610052/how-can-i-preset-aliases-for-all-users
 echo "alias k='kubectl'" >> /etc/profile.d/00-aliases.sh
 
-### https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-### https://www.suse.com/c/rancher_blog/deploy-an-ingress-controller-on-k3s/
-### https://carpie.net/articles/ingressing-with-k3s -> configmap
-### https://kind.sigs.k8s.io/docs/user/ingress/
+echo "Create part2 Namespace"
+# /usr/local/bin/kubectl create ns part2
+
+echo "Create Ingress"
+/usr/local/bin/kubectl apply -f /vagrant/confs/ingress.yaml -n kube-system
 
 echo "Setup Web App 1"
-/usr/local/bin/kubectl create configmap app1-html --from-file /vagrant/confs/app1/index.html
-/usr/local/bin/kubectl apply -f /vagrant/confs/app1/app1.yaml
-# /usr/local/bin/kubectl apply -f /vagrant/confs/app1/dep.yaml
-# /usr/local/bin/kubectl apply -f /vagrant/confs/app1/ser.yaml
-# /usr/local/bin/kubectl apply -f /vagrant/confs/app1/ing.yaml
+/usr/local/bin/kubectl apply -f /vagrant/confs/app1.yaml -n kube-system
 
 echo "Setup Web App 2"
-/usr/local/bin/kubectl create configmap app2-html --from-file /vagrant/confs/app2/index.html
-/usr/local/bin/kubectl apply -f /vagrant/confs/app2/app2.yaml
+/usr/local/bin/kubectl apply -f /vagrant/confs/app2.yaml -n kube-system
 
 echo "Setup Web App 3"
-/usr/local/bin/kubectl create configmap app3-html --from-file /vagrant/confs/app3/index.html
-/usr/local/bin/kubectl apply -f /vagrant/confs/app3/app3.yaml
-
-
-
-
-
-
-/usr/local/bin/kubectl create configmap app1-html --from-file /vagrant/confs/app1/index.html
-/usr/local/bin/kubectl apply -f /vagrant/confs/app1/app1.yaml
-/usr/local/bin/kubectl create configmap app2-html --from-file /vagrant/confs/app2/index.html
-/usr/local/bin/kubectl apply -f /vagrant/confs/app2/app2.yaml
-/usr/local/bin/kubectl create configmap app3-html --from-file /vagrant/confs/app3/index.html
-/usr/local/bin/kubectl apply -f /vagrant/confs/app3/app3.yaml
+/usr/local/bin/kubectl apply -f /vagrant/confs/app3.yaml -n kube-system
