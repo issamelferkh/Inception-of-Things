@@ -51,10 +51,11 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ### https://argo-cd.readthedocs.io/en/stable/getting_started/
 
 echo "$blue Create K3d cluster $(tput sgr0)"
-k3d cluster create mycluster -p 8080:80@loadbalancer --agents 2 --k3s-arg "--disable=traefik@server:0"
+k3d cluster create mycluster -p 8080:80@loadbalancer -p 8888:30080@loadbalancer --agents 2 --k3s-arg "--disable=traefik@server:0"
 
-echo "$blue Create argocd namespace $(tput sgr0)"
+echo "$blue Create argocd and dev namespaces $(tput sgr0)"
 kubectl create namespace argocd
+kubectl create namespace dev
 
 echo "$blue Setup Argo CD $(tput sgr0)"
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml

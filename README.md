@@ -56,3 +56,9 @@ K101f721423e4ecb1226987ea9c06756e52b035ccb2d36e67f6c20fa86bd2f72645::server:0bc1
 
 
 https://github.com/paulbouwer/hello-kubernetes/blob/main/deploy/helm/hello-kubernetes/templates/deployment.yaml
+
+
+# Part 3
+
+
+
