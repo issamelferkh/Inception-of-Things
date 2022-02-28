@@ -10,12 +10,6 @@ echo "Add k alias for all users"
 ### https://askubuntu.com/questions/610052/how-can-i-preset-aliases-for-all-users
 echo "alias k='kubectl'" >> /etc/profile.d/00-aliases.sh
 
-echo "Create part2 Namespace"
-# /usr/local/bin/kubectl create ns part2
-
-echo "Create Ingress"
-/usr/local/bin/kubectl apply -f /vagrant/confs/ingress.yaml -n kube-system
-
 echo "Setup Web App 1"
 /usr/local/bin/kubectl apply -f /vagrant/confs/app1.yaml -n kube-system
 
@@ -24,3 +18,6 @@ echo "Setup Web App 2"
 
 echo "Setup Web App 3"
 /usr/local/bin/kubectl apply -f /vagrant/confs/app3.yaml -n kube-system
+
+echo "Create Ingress"
+/usr/local/bin/kubectl apply -f /vagrant/confs/ingress.yaml -n kube-system

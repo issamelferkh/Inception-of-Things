@@ -11,7 +11,12 @@ blue=$(tput setaf 4)
 echo "$blue Install net-tools $(tput sgr0)"
 sudo apt install net-tools -y
 
-# Install Docker
+# Add Alias ##############################################################################
+echo "$blue Add k alias to all users $(tput sgr0)"
+echo "alias k='kubectl'" >> /etc/profile.d/00-aliases.sh
+source /etc/profile.d/00-aliases.sh
+
+# Install Docker 
 echo "$blue Install Docker $(tput sgr0)"
 ### https://docs.docker.com/engine/install/ubuntu/
   # Uninstall old versions if existe
@@ -75,3 +80,7 @@ kubectl wait --for=condition=ready pod $params
 
 echo "Argo CD username: $green admin $(tput sgr0)"
 echo "Argo CD Password: $red $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d;) $(tput sgr0)"
+
+echo "$blue Clone Argo CD manifest conf $(tput sgr0)"
+sudo git clone https://github.com/issamelferkh/ybolles_config.git ~/p3
+sudo kubectl apply -f ~/p3/argocd_manifest/manifest.yaml -n argocd

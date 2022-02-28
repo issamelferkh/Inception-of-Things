@@ -9,7 +9,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: .
-    repoURL: 'https://github.com/issamelferkh/argocd.git'
+    repoURL: 'https://github.com/issamelferkh/ybolles_config.git'
     targetRevision: HEAD
   project: default
   syncPolicy:
